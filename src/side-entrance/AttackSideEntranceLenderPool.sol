@@ -10,13 +10,13 @@ contract AttackSideEntranceLenderPool is IFlashLoanEtherReceiver {
     error AttackSideEntranceLenderPool__TransferFailed();
 
     address private immutable i_victim;
-    address private immutable i_owner;
+    address private immutable i_recovery;
 
     uint256 private s_amount;
 
-    constructor(address _victim, address _owner) payable {
+    constructor(address _victim, address _recovery) payable {
         i_victim = payable(_victim);
-        i_owner = _owner;
+        i_recovery = _recovery;
     }
 
     receive() external payable {
@@ -53,7 +53,7 @@ contract AttackSideEntranceLenderPool is IFlashLoanEtherReceiver {
     // }
 
     function transferMoney() external {
-        (bool sucess,) = payable(i_owner).call{value: s_amount}("");
+        (bool sucess,) = payable(i_recovery).call{value: s_amount}("");
         if (!sucess) revert AttackSideEntranceLenderPool__TransferFailed();
     }
 }
